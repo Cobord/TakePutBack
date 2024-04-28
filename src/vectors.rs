@@ -95,8 +95,8 @@ mod test {
     #[test]
     fn nonempty_nothing() {
         use super::TakePutBack;
-        use nonempty::nonempty;
         use env_logger;
+        use nonempty::nonempty;
         let _ = env_logger::try_init();
         let mut v = nonempty![0, 1, 2, 3, 4, 5];
         let expected = v.clone();
