@@ -8,6 +8,9 @@ pub trait TakePutBack<IndexInto1: Clone, IndexInto2: Clone + Send + 'static> {
 
     fn put_back(&mut self, index_into: IndexInto2, reinsert: Self::PutType);
 
+    fn all_idces_inout(&self) -> Vec<(IndexInto1, IndexInto2)>;
+    fn do_nothing_process(&self) -> fn(Self::ItemType) -> Self::PutType;
+
     fn process_all<F>(
         &mut self,
         which_idces: &[(IndexInto1, IndexInto2)],

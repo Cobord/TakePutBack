@@ -9,3 +9,4 @@ edition = "2021"
 nonempty = "^0.8.1"
 petgraph = "^0.6.2"
 log = { version = "^0.4.17", features = ["max_level_debug", "release_max_level_warn"] }
+env_logger = "*"

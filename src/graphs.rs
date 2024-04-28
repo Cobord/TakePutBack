@@ -22,6 +22,17 @@ impl<N: Default, E> TakePutBack<NodeIndex, NodeIndex> for StableGraph<N, E> {
         let z = self.node_weight_mut(index_into).expect("Index Exists");
         *z = reinsert;
     }
+
+    fn all_idces_inout(&self) -> Vec<(NodeIndex, NodeIndex)> {
+        self.node_indices().map(|z| (z, z)).collect()
+    }
+
+    fn do_nothing_process(&self) -> fn(Self::ItemType) -> Self::PutType {
+        |z| {
+            info!("Doing nothing on node of stable graph");
+            z
+        }
+    }
 }
 
 impl<N: Default, E> TakePutBack<NodeIndex, NodeIndex> for Graph<N, E> {
@@ -36,6 +47,17 @@ impl<N: Default, E> TakePutBack<NodeIndex, NodeIndex> for Graph<N, E> {
     fn put_back(&mut self, index_into: NodeIndex, reinsert: Self::PutType) {
         let z = self.node_weight_mut(index_into).expect("Index Exists");
         *z = reinsert;
+    }
+
+    fn all_idces_inout(&self) -> Vec<(NodeIndex, NodeIndex)> {
+        self.node_indices().map(|z| (z, z)).collect()
+    }
+
+    fn do_nothing_process(&self) -> fn(Self::ItemType) -> Self::PutType {
+        |z| {
+            info!("Doing nothing on node of unstable graph");
+            z
+        }
     }
 }
 
@@ -52,6 +74,17 @@ impl<N, E: Default> TakePutBack<EdgeIndex, EdgeIndex> for StableGraph<N, E> {
         let z = self.edge_weight_mut(index_into).expect("Index Exists");
         *z = reinsert;
     }
+
+    fn all_idces_inout(&self) -> Vec<(EdgeIndex, EdgeIndex)> {
+        self.edge_indices().map(|z| (z, z)).collect()
+    }
+
+    fn do_nothing_process(&self) -> fn(Self::ItemType) -> Self::PutType {
+        |z| {
+            info!("Doing nothing on edge of stable graph");
+            z
+        }
+    }
 }
 
 impl<N, E: Default> TakePutBack<EdgeIndex, EdgeIndex> for Graph<N, E> {
@@ -66,6 +99,17 @@ impl<N, E: Default> TakePutBack<EdgeIndex, EdgeIndex> for Graph<N, E> {
     fn put_back(&mut self, index_into: EdgeIndex, reinsert: Self::PutType) {
         let z = self.edge_weight_mut(index_into).expect("Index Exists");
         *z = reinsert;
+    }
+
+    fn all_idces_inout(&self) -> Vec<(EdgeIndex, EdgeIndex)> {
+        self.edge_indices().map(|z| (z, z)).collect()
+    }
+
+    fn do_nothing_process(&self) -> fn(Self::ItemType) -> Self::PutType {
+        |z| {
+            info!("Doing nothing on edge of unstable graph");
+            z
+        }
     }
 }
 
@@ -132,5 +176,28 @@ impl<N: Default, E: Send + Clone + 'static>
                 (their indices will have shifted when putting into self)
                 with above ambient nodes"
         );
+    }
+
+    fn all_idces_inout(&self) -> Vec<(NodeIndex, (NodeIndex, Vec<NodeIndex>, Vec<NodeIndex>))> {
+        self.node_indices()
+            .map(|z| {
+                (
+                    z,
+                    (
+                        z,
+                        self.neighbors_directed(z, Direction::Incoming).collect(),
+                        self.neighbors_directed(z, Direction::Outgoing).collect(),
+                    ),
+                )
+            })
+            .collect()
+    }
+
+    fn do_nothing_process(&self) -> fn(Self::ItemType) -> Self::PutType {
+        |(node_data, in_edges, out_edges)| {
+            let mut ret_graph = StableGraph::new();
+            let ret_idx = ret_graph.add_node(node_data);
+            (ret_graph, ret_idx, ret_idx, in_edges, out_edges)
+        }
     }
 }
