@@ -1,5 +1,6 @@
 use std::{num::NonZeroUsize, sync::mpsc, thread};
 
+#[allow(dead_code)]
 pub trait TakePutBack<IndexInto1: Clone, IndexInto2: Clone + Send + 'static> {
     type ItemType;
     type PutType;
