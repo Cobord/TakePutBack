@@ -12,6 +12,6 @@ repository = "https://github.com/Cobord/TakePutBack"
 nonempty = {version = "^0.8.1"}
 petgraph = {version = "^0.6.2", optional = true }
 log = { version = "^0.4.17", features = ["max_level_debug", "release_max_level_warn"] }
-env_logger = "*"
+env_logger = "^0.11.3"
 
 [features]
