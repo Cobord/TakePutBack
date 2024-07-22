@@ -2,6 +2,9 @@
 name = "take_put_back"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+description = "A common abstraction of the process of taking some piece out, processing it and then putting it back."
+repository = "https://github.com/Cobord/TakePutBack"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
