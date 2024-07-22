@@ -201,3 +201,12 @@ impl<N: Default, E: Send + Clone + 'static>
         }
     }
 }
+
+mod test {
+    #[test]
+    fn presence() {
+        #[allow(unused_imports)]
+        use super::*;
+        // just make sure the above functions are present
+    }
+}
