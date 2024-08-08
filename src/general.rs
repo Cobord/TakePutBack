@@ -5,13 +5,33 @@ pub trait TakePutBack<IndexInto1: Clone, IndexInto2: Clone + Send + 'static> {
     type ItemType;
     type PutType;
 
+    /// you can extract out the ItemType at index_into
+    /// leaving a default in it's place
+    /// or something else that is up to the implementer
     fn take(&mut self, index_into: IndexInto1) -> Self::ItemType;
 
+    /// splice in PutType at the prescibed location
+    /// the way you index for taking and putting back do not have to be the same
     fn put_back(&mut self, index_into: IndexInto2, reinsert: Self::PutType);
 
+    /// the way you index for taking and putting back do not have to be the same
+    /// but for the do nothing operation, there is still some correspondence
+    /// as described below
     fn all_idces_inout(&self) -> Vec<(IndexInto1, IndexInto2)>;
+
+    /// if you do take on index_into and get some ItemType,
+    /// run that through this function and then put_back
+    /// with the corrsponding index_into (the one in the same pair in all_idces_inout)
+    /// the composite operation should be the identity
     fn do_nothing_process(&self) -> fn(Self::ItemType) -> Self::PutType;
 
+    /// for each pair in which_idces
+    /// we are taking out with the first component
+    /// applying the processor
+    /// then doing put back with the second component
+    /// all the entries in which_idces should be independent
+    /// it is assumed that the processor running is the intense
+    /// part so those are all operating with their own thread::spawn
     fn process_all<F>(
         &mut self,
         which_idces: &[(IndexInto1, IndexInto2)],
@@ -27,6 +47,9 @@ pub trait TakePutBack<IndexInto1: Clone, IndexInto2: Clone + Send + 'static> {
         }
     }
 
+    /// as before but this has only at most the thread::available_parallism()
+    /// in which_idces, could call this directly but that avoids the chunking
+    /// into such bounded sizes that process_all does
     fn process_all_helper<F>(
         &mut self,
         which_idces: &[(IndexInto1, IndexInto2)],

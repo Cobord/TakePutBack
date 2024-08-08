@@ -113,9 +113,9 @@ impl<N, E: Default> TakePutBack<EdgeIndex, EdgeIndex> for Graph<N, E> {
     }
 }
 
-// replace a single node with a graph equipped with two special nodes
-// the incoming neighbors of the old node are connected to the first special node
-// the outgoing neighbors of the old node are connected from the second special node
+/// replace a single node with a graph equipped with two special nodes
+/// the incoming neighbors of the old node are connected to the first special node
+/// the outgoing neighbors of the old node are connected from the second special node
 impl<N: Default, E: Send + Clone + 'static>
     TakePutBack<NodeIndex, (NodeIndex, Vec<NodeIndex>, Vec<NodeIndex>)> for StableGraph<N, E>
 {
